@@ -1,0 +1,15 @@
+
+
+services:
+  app:
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./src:/usr/local/schat/src/
+
+
+  cassandra:
+
+
+  redis:
+

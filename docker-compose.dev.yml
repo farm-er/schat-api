@@ -1,0 +1,30 @@
+
+
+services:
+  app:
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./src:/usr/local/schat/src/
+    ports:
+      - "3000:3000"
+    command: ["npm", "run", "dev"]
+
+
+  cassandra:
+    ports:
+      - "9042:9042"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=schat-app
+      - MINIO_ROOT_PASSWORD=schat-app
+    command: server /data --console-address ":9001"
+

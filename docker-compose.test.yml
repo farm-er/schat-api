@@ -1,0 +1,18 @@
+
+
+services:
+  app:
+    environment:
+      - NODE_ENV=test
+    volumes:
+      - ./images:/usr/local/schat/images/
+    command: ["npm", "test"]
+
+
+  cassandra:
+    logging:
+          driver: "none"
+
+  redis:
+    logging:
+        driver: "none"

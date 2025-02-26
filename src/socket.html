@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Websockets with Express - Coding Ninjas</title>
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+   
+  </head>
+  <body>
+    <!-- You can add the HTML content here -->
+    <script>
+      const socket = io({
+        auth: {
+          token: "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzk3NTA3NjgsImlkIjoiY2EyNjc4Y2QtNGY0MC00OTg2LWFlNGMtODc0YzQyZTkyMTc4IiwidmVyaWZpZWQiOnRydWUsImlhdCI6MTczOTY2NDM2OH0.XI5pHNtMMa0CBLcB9jmoVHJlDVLj6kfLMd79AuCKWuATfxKKHj0A4OWc_ZqE68k2Q-4NkiLmGflitNUF58m3VBMlGFeGXcuCuGxyAOilnYZXW73zv06YMJC2dpO6_vc0GDsJ3C1LFq0UrDED8k55hHDJpjGRc4Hkm0sUz68bsRN_-e8DbUopBLz_15ocJtQ-nZhcu8WzABmrqwNDCaXbi5boP4EqFSZr5frmywzIFUz5ExsxMzuSVoeJudwIDP8sT74dwm96krLEXxwiRDYkFfIPWBm0hCfiN5sOd6Rc3WmvDrCCvS0ITlkWZ4_YlQp5RBwzCLjAuorcqFO03B0FeA"
+        }
+      });
+
+      socket.hand
+
+      // It will Emit an event to the server
+      socket.emit('message', { 
+        chatId: 'c34877e8-0035-41a7-9456-627e4a53d62d',
+        receiverId: 'c0283ac9-15fb-46ab-94b3-c9e216e3de7e',
+        content: 'hahahhhahha',
+      });
+
+      // It will Handle incoming events from the server
+      socket.on('message', (data) => {
+        console.log('Received:', data);
+      });
+    </script>
+  </body>
+</html>

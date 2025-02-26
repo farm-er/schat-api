@@ -1,0 +1,66 @@
+
+
+services:
+  app:
+    build:
+     context: . # path to schat dockerfile
+    container_name: schat
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      - CASSANDRA_HOST=cassandra
+      - REDIS_HOST=redis
+    networks:
+      - my-network
+
+  cassandra:
+    image: cassandra:latest
+    container_name: schat-cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=schat
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=Rack1
+      - CASSANDRA_LISTENER_INTERFACE=eth0
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra
+    volumes: # for index configuration 
+      - ./cassandra.yaml:/etc/cassandra/cassandra.yaml
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "SELECT release_version FROM system.local;"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s    
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    container_name: schat-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+    networks:
+      - my-network
+    
+  minio:
+    image: quay.io/minio/minio
+    container_name: schat-minio
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 1s
+      timeout: 1s
+      retries: 20
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

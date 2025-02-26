@@ -1,0 +1,10 @@
+FROM node:20-alpine3.21
+
+# WHERE THE APP WILL BE PLACED
+WORKDIR /usr/local/schat
+
+# COPY PACKAGE.JSON AND INSTALL DEPENDENCIES
+COPY ./package*.json ./
+RUN npm install 
+# COPY THE PROJECT'S FILES
+COPY ./ ./

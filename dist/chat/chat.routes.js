@@ -1,0 +1,10 @@
+import { json, Router } from "express";
+import { addChat, deleteChat, getChats } from "./chat.handlers";
+import { jwtMiddleware } from "../middlewares/jwt.middleware";
+const chatRouter = Router();
+chatRouter.use(jwtMiddleware);
+chatRouter.use(json());
+chatRouter.get('/', getChats);
+chatRouter.post('/', addChat);
+chatRouter.delete('/', deleteChat);
+export default chatRouter;
