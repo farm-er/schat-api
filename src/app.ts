@@ -185,6 +185,8 @@ io.on( "connection", async (socket: Socket) => {
             await handleTyping( io, user.id, data)
         })
 
+        // TODO: other events here
+
         socket.on('disconnect',  async () => {
             await disconnectUser( socket.id, user.id)
         });
