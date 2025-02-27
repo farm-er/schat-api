@@ -161,6 +161,9 @@ io.on( "connection", async (socket: Socket) => {
         // }
         // returns nothing for now
         // sends the message to the receiver if he's online as the same event MESSAGE   
+        // and returns missing data to the sender
+        // returns unauthorized event if the user is blocked 
+        // or server error in case of a server error
         socket.on( "message", async (data) => {
             await handleMessage( io, socket.id, user.id, data);
         })

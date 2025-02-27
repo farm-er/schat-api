@@ -10,7 +10,7 @@ import { createSession, deleteSession, getSession } from "../cache/client"
 //  
 
 import Message, { Media, Reply } from "../message/message.model"
-import Chat from "../chat/chat.model"
+import Chat, { userStatus } from "../chat/chat.model"
 import { Server } from "socket.io"
 
 
@@ -38,7 +38,17 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             throw new Error("chat not found")            
         }
 
-        if ( chat.user1.id.toString() !== receiverId && chat.user2.id.toString() !== receiverId) {
+        // check chat sender and receiver and respective status
+        if ( chat.user1.id.toString() !== userId && chat.user2.id.toString() !== receiverId) {
+            // if the user is blocked
+            if (chat.user1.status === userStatus.BLOCKED) {
+                io.to(userId).emit("unauthorized", "you're blocked by the user");
+            }
+        } else if ( chat.user2.id.toString() !== userId && chat.user1.id.toString() !== receiverId) {
+            if (chat.user2.status === userStatus.BLOCKED) {
+
+            }
+        } else {
             throw new Error("receiver not found")
         }
 
@@ -71,7 +81,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
 
     } catch (e) {
         console.log( "error storing the message: ", e)
-        io.to(userId).emit( "error")
+        io.to(userId).emit( "server error", "error handling user")
     }
 
 
