@@ -6,9 +6,9 @@ import User from "../user/user.model";
 
 
 export enum userStatus {
-  NORMAL=0,
-  MUTED=1,
-  BLOCKED=2
+  NORMAL='0',
+  MUTED='1',
+  BLOCKED='2'
 }
 
 
@@ -64,7 +64,7 @@ export async function createChatTable( client: Client) {
 type user = {
   id: string
   username: string
-  status: number
+  status: string
 }
 
 export default class Chat {

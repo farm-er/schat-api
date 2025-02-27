@@ -2,11 +2,8 @@ import { Request, Response } from "express";
 import { HttpStatus } from "../utils/status.codes";
 import { jsonResponse } from "../utils/json";
 import User from "./user.model";
-import { isBigIntObject } from "util/types";
-import { truncate } from "fs";
 import { compare } from "../utils/hash";
 import mediaStorage from "../media_storage/media_storage";
-import multer from "multer";
 import { validateAvatar, validateUsername } from "../auth/register";
 
 
@@ -38,8 +35,14 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
             bio: user.bio,
             email: user.email,
             status: user.status,
-            verified: user.verified
+            verified: user.verified,
+            avatar: ""
         }
+
+        const avatar = await mediaStorage.getAvatar( user.id)
+
+        if (avatar) u.avatar = avatar
+
 
         res.status( HttpStatus.OK).json( { "user": u})
 
@@ -137,7 +140,7 @@ export async function updateAvatar( req: Request, res: Response): Promise<void> 
                 return
             }
 
-            await mediaStorage.updateAvatar( avatar, userId);
+            await mediaStorage.updateAvatar( avatar, userId, contentType.split( '/')[1].toLowerCase());
 
             jsonResponse(res, HttpStatus.OK, "avatar updated successfully");
         });

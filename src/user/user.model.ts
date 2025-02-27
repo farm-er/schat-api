@@ -5,6 +5,7 @@ import { Client } from "cassandra-driver";
 
 import dbClient from "../database/client";
 import mediaStorage from "../media_storage/media_storage";
+import imageType from "image-type";
 
 
 // we separated the storage of avatars for simplicity
@@ -162,7 +163,11 @@ export default class User {
       user.verified,
     ], { prepare: true });
 
-    await mediaStorage.storeAvatar( user.avatar!, user.id);
+    if ( user.avatar) {
+      const type = await imageType( user.avatar)
+      if(!type) throw new Error( "invalid avatar")
+      await mediaStorage.storeAvatar( user.avatar, user.id, type?.ext);
+    }
   
   }
 

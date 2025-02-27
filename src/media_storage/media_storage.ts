@@ -4,13 +4,16 @@ import { minioClient } from "./client";
 import { v4 as uuidv4 } from "uuid"
 
 
+// TODO: change avatar table
+// TODO: change storage functions for the avatar in media storage class
+// TODO: store avtar link in the database
 
 export async function createAvatarTable( client: Client) {
   
     const createAvatarTable = `
         CREATE TABLE IF NOT EXISTS avatars (
         id UUID,
-        avatar BLOB,
+        avatar TEXT,
         PRIMARY KEY (id)
         );
     `;
@@ -37,8 +40,12 @@ export async function createAvatarTable( client: Client) {
 export default class mediaStorage {
 
 
-    static async storeAvatar( avatar: Buffer, userId: string) {
+    static async storeAvatar( avatar: Buffer, userId: string, ext: string) {
+
+        const avatarId = await this.storeImage( userId, avatar, ext)
         
+        // store the avatar link in the db
+        // TODO: it's better to store it with the user
         const insertQuery = `
             INSERT INTO avatars (id, avatar)
             VALUES (?, ?);
@@ -46,48 +53,48 @@ export default class mediaStorage {
 
         await dbClient.execute(insertQuery, [
             userId,
-            avatar
+            avatarId
         ], { prepare: true });
 
     }
 
-    static async updateAvatar( avatar: Buffer, userId: string) {
+    static async updateAvatar( avatar: Buffer, userId: string, ext: string) {
+
+
+        const avatarId = await this.storeImage( userId, avatar, ext)
 
         const query = `
             UPDATE avatars SET avatar=? WHERE id=?
         `;
 
         await dbClient.execute(query, [
-            avatar,
+            avatarId,
             userId
         ], { prepare: true });
 
     }
 
-    static async getAvatar( userId: string): Promise<Buffer | undefined> {
+    static async getAvatar( userId: string): Promise<string | null> {
         
         const query = 'SELECT avatar FROM avatars WHERE id = ? LIMIT 1';
   
-        try {
-    
-            const result = await dbClient.execute(query, [userId], { prepare: true });
-    
-            if (result.rowLength === 0) {
-                return undefined;
-            }
+        const result = await dbClient.execute(query, [userId], { prepare: true });
 
-            const avatar: Buffer = result.first().get('avatar')
-
-            return avatar
-        } catch(e) {
-            throw e
+        if (result.rowLength === 0) {
+            return null;
         }
+
+        const avatar: string = result.first().get('avatar')
+
+        const avatarUrl = await this.getImage( avatar)
+
+        return avatarUrl
     }
 
     // managing images storage
     static async storeImage( userId: string, imageData :Buffer, ext: string): Promise<string> {
 
-        const imageId = "/" + userId + "/" + uuidv4() + ext
+        const imageId = "/" + userId + "/" + uuidv4() + "." + ext
         console.log("storing image with id: ", imageId)
         // WE CAN USE THE ITAG AFTER TO VALIDATE THE DATA INTEGRITY
         await minioClient.putObject( "images", imageId, imageData, imageData.length)
