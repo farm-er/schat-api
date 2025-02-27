@@ -19,7 +19,6 @@ import dbClient, { createKeyspace } from "./database/client";
 import { createChatTable } from "./chat/chat.model";
 import { createMessageTable } from "./message/message.model";
 import { createAvatarTable } from "./media_storage/media_storage";
-import avatarRouter from "./avatar/avatar";
 import messageRouter from "./message/message.routes";
 import searchUserRouter from "./search/search.user";
 import sendRouter from "./auth/send.verificationCode";
@@ -94,12 +93,6 @@ app.use( '/api/send/email', sendRouter)
 // to block mute (unmute/unblock) user respectively
 // needs auth token and chatId from the request body
 app.use( '/api/chats', chatRouter)
-// GET
-// gets user's id from query params 
-// returns 422 if the id is missing
-// returns 404 if the avatar was not found
-// returns avatar with 200 status
-app.use( '/api/avatars', avatarRouter)
 // GET
 // needs user's token
 // gets chatId from query parameter

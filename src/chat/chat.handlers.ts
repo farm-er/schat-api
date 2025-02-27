@@ -29,7 +29,9 @@ export async function getChats ( req: Request, res: Response) {
             return;
         }
 
-        const chats: Chat[] = (await Promise.all(user.chats.map( chatId => Chat.getChat(chatId)))).filter( (chat): chat is Chat => chat !== null);
+        const chats: Chat[] = (
+            await Promise.all(user.chats.map( chatId => Chat.getChat(chatId))))
+            .filter( (chat): chat is Chat => chat !== null);
 
         res.status( HttpStatus.OK).json( { "chats": chats})
 

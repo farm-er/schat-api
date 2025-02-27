@@ -106,20 +106,14 @@ export default class Chat {
       VALUES (?, ?, ?, ?);
     `;
 
-    try {
-      await dbClient.execute(insertQuery, [
-        this.id,
-        this.createdAt,
-        this.user1,
-        this.user2,
-      ], { prepare: true });
-      
-    } catch (e) {
-      throw e
-    }
+    await dbClient.execute(insertQuery, [
+      this.id,
+      this.createdAt,
+      this.user1,
+      this.user2,
+    ], { prepare: true });
   
   }
-
 
   static async getChat( id: string) : Promise<Chat | null> {
     
@@ -128,27 +122,23 @@ export default class Chat {
       WHERE id=? LIMIT 1;
     `;
 
-    try {
-      const result = await dbClient.execute(insertQuery, [
-        id
-      ], { prepare: true });
+    const result = await dbClient.execute(insertQuery, [
+      id
+    ], { prepare: true });
 
-      if (result.rowLength === 0) {
-        return null
-      }
-    
-      const chat: Chat = new Chat({
-          createdAt: result.first().get('createdAt'),
-          id: result.first().get('id').toString(),
-          user1: result.first().get('user1'),
-          user2: result.first().get('user2'),
-          last_message: result.first().get('last_message'),
-      })
-
-      return chat
-    } catch (e) {
-      throw e
+    if (result.rowLength === 0) {
+      return null
     }
+  
+    const chat: Chat = new Chat({
+        createdAt: result.first().get('createdAt'),
+        id: result.first().get('id').toString(),
+        user1: result.first().get('user1'),
+        user2: result.first().get('user2'),
+        last_message: result.first().get('last_message'),
+    })
+
+    return chat
   }
 
   static async blockChat( id: string, user: user, pos: number) {
