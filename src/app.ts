@@ -56,6 +56,10 @@ app.use(cors())
 // 422 for missing fields or invalid data
 // POST /api/users/username/
 // returns 422 for missing fields or invalid data 
+// GET /api/users/status
+// needs token
+// needs userId in query params
+// returns user latest status
 app.use( '/api/users', userRouter)
 
 // POST

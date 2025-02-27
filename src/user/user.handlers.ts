@@ -146,3 +146,29 @@ export async function updateAvatar( req: Request, res: Response): Promise<void> 
     }
 
 }
+
+
+export async function getStatus( req: Request, res: Response): Promise<void> {
+
+    const userId = req.params.userId
+
+    if (!userId) {
+        jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "missing field"); 
+        return;
+    }
+
+
+    try {
+
+        const status = await User.getUserStatus( userId)
+
+        res.status( HttpStatus.OK).json({
+            "status": status
+        })
+        
+    } catch (e) {
+        console.log( "error getting user's status",e)
+        jsonResponse( res, HttpStatus.INTERNAL_SERVER_ERROR, "error getting user's status")
+    }
+
+}

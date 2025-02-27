@@ -260,7 +260,17 @@ export default class User {
 
     return result.first().get('username')
 
-  }  
+  }
+
+  static async getUserStatus( id: string): Promise<string> {
+
+    const query = 'SELECT status FROM users WHERE id = ? LIMIT 1';
+  
+    const result = await dbClient.execute(query, [id], { prepare: true });
+
+    return result.first().get('username')
+
+  }
 
   static async updateUserStatus( id: string, status: string) {
  

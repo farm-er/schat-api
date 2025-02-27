@@ -1,7 +1,7 @@
 import { json, Router } from "express";
 
 import { jwtMiddleware } from "../middlewares/jwt.middleware";
-import { deleteUser, getUser, updateAvatar, updateUsername } from "./user.handlers";
+import { deleteUser, getStatus, getUser, updateAvatar, updateUsername } from "./user.handlers";
 import multer from "multer";
 
 
@@ -19,6 +19,7 @@ userRouter.delete("/", json(), deleteUser)
 
 userRouter.post("/avatar/",  updateAvatar)
 userRouter.post("/username/", updateUsername)
+userRouter.get("/status/", getStatus)
 
 
 export default userRouter
