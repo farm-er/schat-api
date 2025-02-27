@@ -1,7 +1,6 @@
 import { Client } from "cassandra-driver";
 import dbClient from "../database/client";
 import Message from "../message/message.model";
-import User from "../user/user.model";
 
 
 
@@ -39,7 +38,8 @@ export async function createChatTable( client: Client) {
     CREATE TYPE IF NOT EXISTS user (
       id UUID,
       username TEXT,
-      status TEXT
+      status TEXT,
+      avatar TEXT
     );
   `
 
@@ -65,6 +65,7 @@ type user = {
   id: string
   username: string
   status: string
+  avatar: string | null
 }
 
 export default class Chat {
@@ -73,7 +74,7 @@ export default class Chat {
   id :string;
   user1: user;
   user2: user;
-  last_message: Message | undefined;
+  last_message: Message | null;
 
   constructor( 
     {
@@ -87,7 +88,7 @@ export default class Chat {
       id :string;
       user1: user;
       user2: user;
-      last_message?: Message;
+      last_message: Message | null;
     }
   )
   {

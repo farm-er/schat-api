@@ -36,13 +36,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
             email: user.email,
             status: user.status,
             verified: user.verified,
-            avatar: ""
+            avatar: user.avatar
         }
-
-        const avatar = await mediaStorage.getAvatar( user.id)
-
-        if (avatar) u.avatar = avatar
-
 
         res.status( HttpStatus.OK).json( { "user": u})
 

@@ -108,7 +108,7 @@ app.use( '/api/messages', messageRouter)
 // returns all users with usernames prefixed by the username in the query
 app.use('/api/search/users', searchUserRouter)
 
-// this route is specific to media uploading
+// this route is specific to media downloading
 // GET /images/ with imageId in query params and user token
 //      on success returns download url valid for 1h
 app.use('/api/download/', mediaRouter)

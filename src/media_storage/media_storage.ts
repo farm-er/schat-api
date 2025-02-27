@@ -40,26 +40,7 @@ export async function createAvatarTable( client: Client) {
 export default class mediaStorage {
 
 
-    static async storeAvatar( avatar: Buffer, userId: string, ext: string) {
-
-        const avatarId = await this.storeImage( userId, avatar, ext)
-        
-        // store the avatar link in the db
-        // TODO: it's better to store it with the user
-        const insertQuery = `
-            INSERT INTO avatars (id, avatar)
-            VALUES (?, ?);
-        `;
-
-        await dbClient.execute(insertQuery, [
-            userId,
-            avatarId
-        ], { prepare: true });
-
-    }
-
     static async updateAvatar( avatar: Buffer, userId: string, ext: string) {
-
 
         const avatarId = await this.storeImage( userId, avatar, ext)
 
@@ -103,7 +84,7 @@ export default class mediaStorage {
     }
 
     static async getImage( imageId: string): Promise<string> {
-        const url = await minioClient.presignedGetObject( "images", imageId, 60 * 60) // url valid for 1h
+        const url = await minioClient.presignedGetObject( "images", imageId, 604800) // url valid for 7d
         console.log("download url: ", url)
         return url
     }

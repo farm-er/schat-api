@@ -34,7 +34,7 @@ async function registerUser( req: Request, res: Response) {
         const bio: string = req.body.bio
         const email: string = req.body.email 
         const password: string = req.body.password
-        const avatar: Buffer | undefined = req.file?.buffer
+        const avatar: Buffer | null = req.file?req.file.buffer:null
 
         // validate data
         if (
@@ -70,10 +70,11 @@ async function registerUser( req: Request, res: Response) {
             bio: bio,
             status: "",
             verified: false,
-            avatar: avatar
+            avatar: "",
+            chats: null
         })
 
-        await User.addUser( user);
+        await User.addUser( user, avatar);
 
         // TODO: need to make the token only available for like 10 minutes 
 

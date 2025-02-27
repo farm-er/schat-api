@@ -24,6 +24,7 @@ export async function createUserTable( client: Client) {
       status TEXT,
       verified BOOLEAN,
       chats set<UUID>,
+      avatar TEXT,
       PRIMARY KEY (id)
     );
   `;
@@ -70,7 +71,7 @@ export default class User {
   username: string;
   email: string;
   password: string;
-  avatar: Buffer | undefined;
+  avatar: string | null;
   bio: string;
   status: string;
   verified: boolean;
@@ -96,8 +97,8 @@ export default class User {
     bio: string;
     status: string;
     verified: boolean;
-    avatar?: Buffer;
-    chats?: string[]
+    avatar: string | null;
+    chats: string[] | null
   }) {
     this.id = id;
     this.createdAt = createdAt;
@@ -145,11 +146,17 @@ export default class User {
 
   } 
 
-  static async addUser( user: User) {
+  static async addUser( user: User, avatar: Buffer | null) {
+
+    if ( avatar) {
+      const type = await imageType( avatar)
+      if(!type) throw new Error( "invalid avatar")
+      user.avatar = await mediaStorage.storeImage( user.id, avatar, type.ext);
+    }
 
     const insertQuery = `
-        INSERT INTO users (id, created_at, username, email, password, bio, status, verified)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO users (id, created_at, username, email, password, bio, status, verified, avatar)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
     await dbClient.execute(insertQuery, [
@@ -161,13 +168,8 @@ export default class User {
       user.bio,
       user.status,
       user.verified,
+      user.avatar
     ], { prepare: true });
-
-    if ( user.avatar) {
-      const type = await imageType( user.avatar)
-      if(!type) throw new Error( "invalid avatar")
-      await mediaStorage.storeAvatar( user.avatar, user.id, type?.ext);
-    }
   
   }
 
@@ -190,6 +192,8 @@ export default class User {
       bio: result.first().get('bio'),
       verified: result.first().get('verified'),
       status: result.first().get('status'),
+      chats: result.first().get('chats'),
+      avatar: result.first().get('avatar')
     })
     return user
 
@@ -215,6 +219,8 @@ export default class User {
       bio: result.first().get('bio'),
       verified: result.first().get('verified'),
       status: result.first().get('status'),
+      chats: result.first().get('chats'),
+      avatar: result.first().get('avatar')
     })
     return user
 
@@ -239,7 +245,8 @@ export default class User {
       bio: result.first().get('bio'),
       verified: result.first().get('verified'),
       status: result.first().get('status'),
-      chats: result.first().get('chats')
+      chats: result.first().get('chats'),
+      avatar: result.first().get('avatar')
     })
     return user
 

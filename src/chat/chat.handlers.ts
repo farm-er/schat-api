@@ -95,14 +95,17 @@ export async function addChat ( req: Request, res: Response) {
             id: chatId,
             user1: {
                 id: id1,
-                username: u1?.username,
+                username: u1.username,
+                avatar: u1.avatar,
                 status: userStatus.NORMAL,
             },
             user2: {
                 id: id2,
-                username: u2?.username,
+                username: u2.username,
+                avatar: u2.avatar,
                 status: userStatus.NORMAL
             },
+            last_message: null,
         })
 
         // add chat to the chats table
