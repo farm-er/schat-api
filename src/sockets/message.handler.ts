@@ -89,7 +89,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
         // sending the message back to the user
         // sending only the required data
         console.log("callback: ", message.id, message.sentAt)
-        io.to(userId).emit("messageCallBack", { 
+        io.to(socketId).emit("messageCallBack", { 
             "id": message.id,
             "sentAt": message.sentAt
         });

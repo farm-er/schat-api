@@ -179,7 +179,8 @@ io.on( "connection", async (socket: Socket) => {
         // then sends these informations to the receiverId as follows
         //{
         //     "typerId": typerId,
-        //     "chatId": chatId
+        //     "chatId": chatId,
+        //     "isTyping": true / false
         // }
         socket.on( "typing", async (data) => {
             await handleTyping( io, user.id, data)
