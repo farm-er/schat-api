@@ -15,6 +15,7 @@ export async function handleTyping( socket: Server, userId: string, data: any) {
 
         const receiverId = data.receiverId as string
         const chatId = data.chatId as string
+        const isTyping = data.isTyping as boolean
 
         const socketId = await getSession( receiverId)
 
@@ -24,7 +25,8 @@ export async function handleTyping( socket: Server, userId: string, data: any) {
 
         socket.to( socketId).emit( "typing", {
             "typerId": userId,
-            "chatId": chatId
+            "chatId": chatId,
+            "isTyping": isTyping
         })
 
     } catch (e) {

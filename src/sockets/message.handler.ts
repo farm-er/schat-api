@@ -9,7 +9,7 @@ import { createSession, deleteSession, getSession } from "../cache/client"
 // get the destination id which will be the chat id
 //  
 
-import Message, { Media, Reply } from "../message/message.model"
+import Message, { Reply } from "../message/message.model"
 import Chat, { userStatus } from "../chat/chat.model"
 import { Server } from "socket.io"
 
@@ -23,7 +23,8 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
     const chatId = data.chatId as string
     const receiverId = data.receiverId as string
     const content = data.content as string
-    const reply = data.reply as Reply
+    const reply = data.reply as Reply | null
+    const media = data.media as string | null
 
     if (!chatId || !receiverId || ( !content )) {
         io.to(userId).emit("missing field")
@@ -59,13 +60,25 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             userId: userId,
             content: content,
             reply: reply,
+            media: media
         })
 
         await message.addMessage()
 
         const receiverSock = await getSession( receiverId)
 
-        if (!receiverSock) return
+        if (!receiverSock){
+            // update the last message of chats
+            await Chat.updateLastMessage( {
+                sentAt: message.sentAt,
+                id: message.id,
+                userId: message.userId,
+                content: message.content,
+                reply: message.reply,
+                media: media
+            }, chatId)
+            return
+        } 
 
         console.log( "sending: ", message)
         io.to(receiverSock).emit("message", { message: message});
@@ -76,8 +89,6 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             "id": message.id,
             "sentAt": message.sentAt
         });
-
-        // TODO: update the last message of the chat
 
     } catch (e) {
         console.log( "error storing the message: ", e)

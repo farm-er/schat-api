@@ -46,11 +46,6 @@ export interface Reply {
     content: string
 }
 
-export interface Media {
-    id: string
-    type: string
-}
-
 export default class Message {
 
     sentAt: Date
@@ -58,8 +53,8 @@ export default class Message {
     id: string
     userId: string
     content: string
-    reply?: Reply
-    media?: Media
+    reply: Reply | null
+    media: string | null
 
 
     constructor(
@@ -77,8 +72,8 @@ export default class Message {
             id: string
             userId: string
             content: string
-            reply?: Reply
-            media?: Media
+            reply: Reply | null
+            media: string | null
         }
     ) {
         this.sentAt = sentAt

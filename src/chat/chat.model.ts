@@ -1,6 +1,7 @@
 import { Client } from "cassandra-driver";
 import dbClient from "../database/client";
-import Message from "../message/message.model";
+import Message, { Reply } from "../message/message.model";
+import { string } from "prop-types";
 
 
 
@@ -27,10 +28,11 @@ export async function createChatTable( client: Client) {
   const createMessageType = `
     CREATE TYPE IF NOT EXISTS message (
       sent_at TIMESTAMP,
-      chat_id UUID,
       id timeuuid,
       user_id UUID,
       content TEXT,
+      reply frozen<reply>,
+      media TEXT
     );
   `
 
@@ -68,13 +70,22 @@ type user = {
   avatar: string | null
 }
 
+interface message {
+  sentAt: Date
+  id: string
+  userId: string
+  content: string
+  reply: Reply | null
+  media: string | null
+}
+
 export default class Chat {
 
   createdAt: Date
   id :string;
   user1: user;
   user2: user;
-  last_message: Message | null;
+  last_message: message | null;
 
   constructor( 
     {
@@ -88,7 +99,7 @@ export default class Chat {
       id :string;
       user1: user;
       user2: user;
-      last_message: Message | null;
+      last_message: message | null;
     }
   )
   {
@@ -141,6 +152,19 @@ export default class Chat {
 
     return chat
   }
+
+  static async updateLastMessage( m: message, chatId: string): Promise<void> {
+
+    const query = `
+      update chats SET last_message=? WHERE ?;
+    `
+
+    await dbClient.execute( query, [
+      m,
+      chatId
+    ])
+
+  } 
 
   static async blockChat( id: string, user: user, pos: number) {
 

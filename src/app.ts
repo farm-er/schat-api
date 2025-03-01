@@ -199,7 +199,6 @@ io.on( "connection", async (socket: Socket) => {
         console.log("error adding new connection with error: ", e)
         socket.emit( "message", "internal server error")
         socket.disconnect()
-        return
     }
 
 })
