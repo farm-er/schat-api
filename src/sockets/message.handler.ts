@@ -67,18 +67,22 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
 
         const receiverSock = await getSession( receiverId)
 
-        if (!receiverSock){
-            // update the last message of chats
-            await Chat.updateLastMessage( {
-                sentAt: message.sentAt,
-                id: message.id,
-                userId: message.userId,
-                content: message.content,
-                reply: message.reply,
-                media: media
-            }, chatId)
-            return
-        } 
+        // TODO: update the message only when the receiver is offline
+        // TODO: but we need to update when one of the users logout 
+        // TODO: until then we will just update it every time
+        
+        // if (!receiverSock){
+        //     // update the last message of chats
+        //     await Chat.updateLastMessage( {
+        //         sentAt: message.sentAt,
+        //         id: message.id,
+        //         userId: message.userId,
+        //         content: message.content,
+        //         reply: message.reply,
+        //         media: media
+        //     }, chatId)
+        //     return
+        // } 
 
         console.log( "sending: ", message)
         io.to(receiverSock).emit("message", { message: message});
@@ -89,6 +93,15 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             "id": message.id,
             "sentAt": message.sentAt
         });
+
+        await Chat.updateLastMessage( {
+            sentAt: message.sentAt,
+            id: message.id,
+            userId: message.userId,
+            content: message.content,
+            reply: message.reply,
+            media: media
+        }, chatId)
 
     } catch (e) {
         console.log( "error storing the message: ", e)
