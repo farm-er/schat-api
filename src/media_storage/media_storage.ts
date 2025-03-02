@@ -55,22 +55,22 @@ export default class mediaStorage {
 
     }
 
-    static async getAvatar( userId: string): Promise<string | null> {
+    // static async getAvatar( userId: string): Promise<string | null> {
         
-        const query = 'SELECT avatar FROM avatars WHERE id = ? LIMIT 1';
+    //     const query = 'SELECT avatar FROM avatars WHERE id = ? LIMIT 1';
   
-        const result = await dbClient.execute(query, [userId], { prepare: true });
+    //     const result = await dbClient.execute(query, [userId], { prepare: true });
 
-        if (result.rowLength === 0) {
-            return null;
-        }
+    //     if (result.rowLength === 0) {
+    //         return null;
+    //     }
 
-        const avatar: string = result.first().get('avatar')
+    //     const avatar: string = result.first().get('avatar')
 
-        const avatarUrl = await this.getImage( avatar)
+    //     const avatarUrl = await this.getImage( avatar)
 
-        return avatarUrl
-    }
+    //     return avatarUrl
+    // }
 
     // managing images storage
     static async storeImage( userId: string, imageData :Buffer, ext: string): Promise<string> {

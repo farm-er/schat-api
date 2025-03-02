@@ -25,6 +25,7 @@ import sendRouter from "./auth/send.verificationCode";
 import { handleTyping } from "./sockets/events.handler";
 import { connectToRedis } from "./cache/client";
 import mediaRouter from "./media_storage/media.handlers";
+import { createStorageBuckets, minioClient } from "./media_storage/client";
 
 
 dotenv.config();
@@ -224,6 +225,11 @@ try {
 
     // create avatars table
     await createAvatarTable( dbClient)
+
+    // test minio client
+    minioClient.listBuckets().then(console.log).catch(console.error);
+
+    await createStorageBuckets()
     
 } catch (e) {
     console.log( "error initializing database: ", e)

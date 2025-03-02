@@ -9,7 +9,7 @@ import { validateAvatar, validateUsername } from "../auth/register";
 
 
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export async function getUser (req: Request, res: Response): Promise<void> {
     
     const id = res.locals.payload.id 
     
@@ -48,7 +48,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-export const deleteUser = async ( req: Request, res: Response): Promise<void> => {
+export async function deleteUser ( req: Request, res: Response): Promise<void> {
 
     const id = res.locals.payload.id 
     const pass = req.body.password

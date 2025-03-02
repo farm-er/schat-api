@@ -34,7 +34,7 @@ async function registerUser( req: Request, res: Response) {
         const bio: string = req.body.bio
         const email: string = req.body.email 
         const password: string = req.body.password
-        const avatar: Buffer | null = req.file?req.file.buffer:null
+        const avatar: Buffer | null = req.file?.buffer ?? null
 
         // validate data
         if (
@@ -73,6 +73,7 @@ async function registerUser( req: Request, res: Response) {
             avatar: "",
             chats: null
         })
+        console.log( "this is the avatar before uploading: ", avatar?.length)
 
         await User.addUser( user, avatar);
 
