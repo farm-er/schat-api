@@ -59,6 +59,11 @@ export async function addChat ( req: Request, res: Response) {
         return;
     }
 
+    if ( id1 === id2) {
+        jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "same id"); 
+        return;
+    }
+
     try {
 
         // get both users' usernames 

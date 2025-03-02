@@ -27,9 +27,9 @@ export async function createChatTable( client: Client) {
 
   const createMessageType = `
     CREATE TYPE IF NOT EXISTS message (
-      sent_at TIMESTAMP,
-      id timeuuid,
-      user_id UUID,
+      sent_at TEXT,
+      id TEXT,
+      user_id TEXT,
       content TEXT,
       reply frozen<reply>,
       media TEXT
@@ -156,13 +156,13 @@ export default class Chat {
   static async updateLastMessage( m: message, chatId: string): Promise<void> {
 
     const query = `
-      update chats SET last_message=? WHERE ?;
+      update chats SET last_message=? WHERE id=?;
     `
 
     await dbClient.execute( query, [
       m,
       chatId
-    ])
+    ], {prepare: true})
 
   } 
 
@@ -178,7 +178,7 @@ export default class Chat {
       await dbClient.execute( query, [
         user,
         id
-      ])
+      ], { prepare: true})
       return
     }
 
@@ -189,7 +189,7 @@ export default class Chat {
     await dbClient.execute( query, [
       user,
       id
-    ])
+    ], { prepare: true})
   }
   
   static async muteChat( id: string, user: user, pos: number) {
@@ -204,7 +204,7 @@ export default class Chat {
       await dbClient.execute( query, [
         user,
         id
-      ])
+      ], { prepare: true})
       return
     }
 
@@ -215,7 +215,7 @@ export default class Chat {
     await dbClient.execute( query, [
       user,
       id
-    ])
+    ], { prepare: true})
 
   }
 
@@ -231,7 +231,7 @@ export default class Chat {
       await dbClient.execute( query, [
         user,
         id
-      ])
+      ], { prepare: true})
       return
     }
 
@@ -242,7 +242,7 @@ export default class Chat {
     await dbClient.execute( query, [
       user,
       id
-    ])
+    ], { prepare: true})
   }
 
 }

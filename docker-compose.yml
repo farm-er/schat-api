@@ -15,8 +15,7 @@ services:
     environment:
       - CASSANDRA_HOST=cassandra
       - REDIS_HOST=redis
-    networks:
-      - my-network
+
 
   cassandra:
     image: cassandra:latest
@@ -35,8 +34,7 @@ services:
       retries: 5
       start_period: 30s
       timeout: 5s    
-    networks:
-      - my-network
+
 
   redis:
     image: redis:latest
@@ -47,8 +45,6 @@ services:
       retries: 5
       start_period: 30s
       timeout: 5s
-    networks:
-      - my-network
     
   minio:
     image: quay.io/minio/minio
@@ -58,9 +54,3 @@ services:
       interval: 1s
       timeout: 1s
       retries: 20
-    networks:
-      - my-network
-
-networks:
-  my-network:
-    driver: bridge

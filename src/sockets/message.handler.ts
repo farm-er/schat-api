@@ -24,7 +24,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
     const receiverId = data.receiverId as string
     const content = data.content as string
     const reply = data.reply as Reply | null
-    const media = data.media as string | null
+    const media = data.media as string | null ?? null
 
     if (!chatId || !receiverId || ( !content )) {
         io.to(userId).emit("missing field")

@@ -1,7 +1,7 @@
 import * as Minio from 'minio'
 
 export const minioClient = new Minio.Client({
-  endPoint: 'schat-minio',
+  endPoint: '172.17.0.1',
   port: 9000,
   useSSL: false,
   accessKey: 'schat-app',
