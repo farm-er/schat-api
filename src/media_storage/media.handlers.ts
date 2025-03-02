@@ -19,7 +19,7 @@ mediaRouter.get( "/images/", getImage)
 
 async function getImage( req: Request, res: Response) {
 
-    const imageId = req.params.imageId
+    const imageId = req.query.imageId as string
 
     const userId = res.locals.payload.id as string
 
