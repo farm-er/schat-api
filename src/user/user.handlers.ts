@@ -150,7 +150,7 @@ export async function updateAvatar( req: Request, res: Response): Promise<void> 
 
 export async function getStatus( req: Request, res: Response): Promise<void> {
 
-    const userId = req.params.userId
+    const userId = req.query.userId as string
 
     if (!userId) {
         jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "missing field"); 
