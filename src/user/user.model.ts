@@ -269,7 +269,7 @@ export default class User {
   
     const result = await dbClient.execute(query, [id], { prepare: true });
 
-    return result.first().get('username')
+    return result.first().get('status')
 
   }
 
