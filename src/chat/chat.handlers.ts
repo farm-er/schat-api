@@ -135,8 +135,8 @@ export async function addChat ( req: Request, res: Response) {
 
 export async function blockChat( req: Request, res: Response) {
 
-    const userId = res.locals.payload?.id
-    const chatId = req.body.chatId as string
+    const userId = res.locals.payload?.id as string
+    const chatId = req.body?.chatId as string
 
     if (!userId || !chatId) {
         jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "missing a field"); 
@@ -148,7 +148,7 @@ export async function blockChat( req: Request, res: Response) {
         const chat = await Chat.getChat( chatId)
 
         if (!chat) {
-            jsonResponse( res, HttpStatus.NOT_FOUND, "not found 1")
+            jsonResponse( res, HttpStatus.NOT_FOUND, "not found")
             return
         }
 
@@ -157,7 +157,7 @@ export async function blockChat( req: Request, res: Response) {
         } else if (chat.user2.id === userId) {
             await Chat.blockChat( chatId, chat.user1, 1) // update user from position 2 
         } else {
-            jsonResponse( res, HttpStatus.NOT_FOUND, "not found 2")
+            jsonResponse( res, HttpStatus.NOT_FOUND, "not found")
             return
         }
 
