@@ -172,7 +172,7 @@ export default class Chat {
     
     if (pos === 1) {
       const query = `
-        update chats SET user1=? WHERE ?;
+        update chats SET user1=? WHERE id=?;
       `
 
       await dbClient.execute( query, [
@@ -183,7 +183,7 @@ export default class Chat {
     }
 
     const query = `
-      update chats SET user2=? WHERE ?;
+      update chats SET user2=? WHERE id=?;
     `
 
     await dbClient.execute( query, [
@@ -198,7 +198,7 @@ export default class Chat {
     
     if (pos === 1) {
       const query = `
-        update chats SET user1=? WHERE ?;
+        update chats SET user1=? WHERE id=?;
       `
 
       await dbClient.execute( query, [
@@ -209,7 +209,7 @@ export default class Chat {
     }
 
     const query = `
-      update chats SET user2=? WHERE ?;
+      update chats SET user2=? WHERE id=?;
     `
 
     await dbClient.execute( query, [
@@ -225,7 +225,7 @@ export default class Chat {
     
     if (pos === 1) {
       const query = `
-        update chats SET user1=? WHERE ?;
+        update chats SET user1=? WHERE id=?;
       `
 
       await dbClient.execute( query, [
@@ -236,7 +236,7 @@ export default class Chat {
     }
 
     const query = `
-      update chats SET user2=? WHERE ?;
+      update chats SET user2=? WHERE id=?;
     `
 
     await dbClient.execute( query, [

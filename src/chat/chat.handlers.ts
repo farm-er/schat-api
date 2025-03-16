@@ -152,9 +152,9 @@ export async function blockChat( req: Request, res: Response) {
             return
         }
 
-        if(chat.user1.id === userId) {
+        if(chat.user1.id.toString() === userId) {
             await Chat.blockChat( chatId, chat.user2, 2) // update user from position 1
-        } else if (chat.user2.id === userId) {
+        } else if (chat.user2.id.toString() === userId) {
             await Chat.blockChat( chatId, chat.user1, 1) // update user from position 2 
         } else {
             jsonResponse( res, HttpStatus.NOT_FOUND, "not found")
@@ -190,9 +190,9 @@ export async function muteChat( req: Request, res: Response) {
             return
         }
 
-        if(chat.user1.id === userId) {
+        if(chat.user1.id.toString() === userId) {
             await Chat.muteChat( chatId, chat.user2, 2) // update user from position 1
-        } else if (chat.user2.id === userId) {
+        } else if (chat.user2.id.toString() === userId) {
             await Chat.muteChat( chatId, chat.user1, 1) // update user from position 2 
         } else {
             jsonResponse( res, HttpStatus.NOT_FOUND, "not found")
@@ -228,9 +228,9 @@ export async function normalChat( req: Request, res: Response) : Promise<void> {
             return
         }
 
-        if(chat.user1.id === userId) {
+        if(chat.user1.id.toString() === userId) {
             await Chat.normalChat( chatId, chat.user2, 2) // update user from position 1
-        } else if (chat.user2.id === userId) {
+        } else if (chat.user2.id.toString() === userId) {
             await Chat.normalChat( chatId, chat.user1, 1) // update user from position 2 
         } else {
             jsonResponse( res, HttpStatus.NOT_FOUND, "not found")
