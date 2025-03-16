@@ -24,7 +24,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
     const receiverId = data.receiverId as string
     const content = data.content as string
     const reply = data.reply as Reply | null
-    const media = data.media as string | null ?? null
+    const media = data.media as string
 
     if (!chatId || !receiverId || ( !content )) {
         io.to(userId).emit("missing field")
@@ -39,19 +39,24 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             throw new Error("chat not found")            
         }
 
-        // check chat sender and receiver and respective status
-        if ( chat.user1.id.toString() !== userId && chat.user2.id.toString() !== receiverId) {
-            // if the user is blocked
+        if (userId === chat.user1.id.toString()) {
             if (chat.user1.status === userStatus.BLOCKED) {
-                io.to(userId).emit("unauthorized", "you're blocked by the user");
+                io.to(userId).emit("unauthorized", "blocked");
+                return
             }
-        } else if ( chat.user2.id.toString() !== userId && chat.user1.id.toString() !== receiverId) {
+        }   else if ( chat.user2.id.toString() === userId) {
             if (chat.user2.status === userStatus.BLOCKED) {
-
+                io.to(userId).emit("unauthorized", "blocked");
+                return
             }
         } else {
             throw new Error("receiver not found")
         }
+
+        if (media) {
+            // TODO: validate the media
+        }
+
 
         const message: Message = new Message({
             sentAt: new Date(),
@@ -66,23 +71,6 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
         await message.addMessage()
 
         const receiverSock = await getSession( receiverId)
-
-        // TODO: update the message only when the receiver is offline
-        // TODO: but we need to update when one of the users logout 
-        // TODO: until then we will just update it every time
-        
-        // if (!receiverSock){
-        //     // update the last message of chats
-        //     await Chat.updateLastMessage( {
-        //         sentAt: message.sentAt,
-        //         id: message.id,
-        //         userId: message.userId,
-        //         content: message.content,
-        //         reply: message.reply,
-        //         media: media
-        //     }, chatId)
-        //     return
-        // } 
 
         console.log( "sending: ", message)
         io.to(receiverSock).emit("message", { message: message});
