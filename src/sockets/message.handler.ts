@@ -41,12 +41,12 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
 
         if (userId === chat.user1.id.toString()) {
             if (chat.user1.status === userStatus.BLOCKED) {
-                io.to(userId).emit("unauthorized", "blocked");
+                io.to(socketId).emit("unauthorized", "blocked");
                 return
             }
         }   else if ( chat.user2.id.toString() === userId) {
             if (chat.user2.status === userStatus.BLOCKED) {
-                io.to(userId).emit("unauthorized", "blocked");
+                io.to(socketId).emit("unauthorized", "blocked");
                 return
             }
         } else {
