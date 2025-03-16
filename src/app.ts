@@ -61,6 +61,10 @@ app.use(cors())
 // needs token
 // needs userId in query params
 // returns user latest status
+// GET /api/users/avatar
+// needs token
+// needs imageId in query params
+// returns url in json with ok status
 app.use( '/api/users', userRouter)
 
 // POST
@@ -116,7 +120,11 @@ app.use('/api/search/users', searchUserRouter)
 // this route is specific to media downloading
 // GET /images/ with imageId in query params and user token
 //      on success returns download url valid for 1h
-app.use('/api/download/', mediaRouter)
+// POST /images/ 
+// needs a token
+// chatId in query params 
+// and the image
+app.use('/api/media/', mediaRouter)
 
 
 const server = http.createServer( app)

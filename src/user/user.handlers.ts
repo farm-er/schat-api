@@ -172,3 +172,30 @@ export async function getStatus( req: Request, res: Response): Promise<void> {
     }
 
 }
+
+
+export async function getAvatar( req: Request, res: Response) {
+
+    const imageId = req.query.imageId as string
+
+    const userId = res.locals.payload.id as string
+
+
+    if (!imageId || !userId) {
+        jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "missing a field"); 
+        return;
+    }
+
+    try {
+        
+        const url = await mediaStorage.getAvatar( imageId)
+
+        res.status(HttpStatus.OK).json({
+            "url": url
+        })
+    } catch (e) {
+        console.log( "error getting image url: ", e)
+        jsonResponse( res, HttpStatus.INTERNAL_SERVER_ERROR, "internal server error")
+    }
+
+}

@@ -42,7 +42,11 @@ export default class mediaStorage {
 
     static async updateAvatar( avatar: Buffer, userId: string, ext: string) {
 
-        const avatarId = await this.storeImage( userId, avatar, ext)
+        const avatarId = "/" + userId + "/" + uuidv4() + "." + ext
+        console.log("storing image with id: ", avatarId)
+        // WE CAN USE THE ITAG AFTER TO VALIDATE THE DATA INTEGRITY
+        await minioClient.putObject( "images", avatarId, avatar, avatar.length)
+    
 
         const query = `
             UPDATE avatars SET avatar=? WHERE id=?
@@ -55,27 +59,10 @@ export default class mediaStorage {
 
     }
 
-    // static async getAvatar( userId: string): Promise<string | null> {
-        
-    //     const query = 'SELECT avatar FROM avatars WHERE id = ? LIMIT 1';
-  
-    //     const result = await dbClient.execute(query, [userId], { prepare: true });
-
-    //     if (result.rowLength === 0) {
-    //         return null;
-    //     }
-
-    //     const avatar: string = result.first().get('avatar')
-
-    //     const avatarUrl = await this.getImage( avatar)
-
-    //     return avatarUrl
-    // }
-
     // managing images storage
-    static async storeImage( userId: string, imageData :Buffer, ext: string): Promise<string> {
+    static async storeImage( prefix: string, imageData :Buffer): Promise<string> {
 
-        const imageId = "/" + userId + "/" + uuidv4() + "." + ext
+        const imageId = prefix + uuidv4()
         console.log("storing image with id: ", imageId)
         // WE CAN USE THE ITAG AFTER TO VALIDATE THE DATA INTEGRITY
         await minioClient.putObject( "images", imageId, imageData, imageData.length)
@@ -83,8 +70,14 @@ export default class mediaStorage {
         return imageId
     }
 
-    static async getImage( imageId: string): Promise<string> {
+    static async getAvatar( imageId: string): Promise<string> {
         const url = await minioClient.presignedGetObject( "images", imageId, 604800) // url valid for 7d
+        console.log("download url: ", url)
+        return url
+    }
+
+    static async getImage( imageId: string): Promise<string> {
+        const url = await minioClient.presignedGetObject( "images", imageId, 3600) // url valid for 7d
         console.log("download url: ", url)
         return url
     }
