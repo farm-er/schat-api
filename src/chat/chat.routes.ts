@@ -22,7 +22,7 @@ chatRouter.post( '/', addChat)
 
 
 // ROUTE BLOCKING AND MUTING ANOTHER USERS
-chatRouter.post( '/block',json(), blockChat)
+chatRouter.post( '/block', json(), blockChat)
 chatRouter.post( '/mute', json(),muteChat)
 chatRouter.post( '/normal', json(),normalChat)
 
