@@ -135,8 +135,8 @@ export async function addChat ( req: Request, res: Response) {
 
 export async function blockChat( req: Request, res: Response) {
 
-    const userId = res.locals.payload.id
-    const chatId = req.body.chatId
+    const userId = res.locals.payload?.id
+    const chatId = req.body?.chatId
 
     if (!userId || !chatId) {
         jsonResponse( res, HttpStatus.UNPROCESSABLE_ENTITY, "missing a field"); 
