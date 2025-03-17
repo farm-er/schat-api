@@ -43,7 +43,7 @@ async function getImage( req: Request, res: Response) {
             return;
         }
 
-        if ( chat.user1.id !== userId && chat.user2.id !== userId) {
+        if ( chat.user1.id.toString() !== userId && chat.user2.id.toString() !== userId) {
             jsonResponse( res, HttpStatus.NOT_FOUND, "chat not found"); 
             return;
         }
