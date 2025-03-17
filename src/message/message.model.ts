@@ -150,6 +150,14 @@ export default class Message {
 
     static async readMessages( chatId: string) {
 
+        const insertQuery = `
+            update messages SET seen=true
+            WHERE chat_id=? ;
+        `;
+
+        await dbClient.execute(insertQuery, [
+            chatId
+        ], { prepare: true });
     }
 
 }
