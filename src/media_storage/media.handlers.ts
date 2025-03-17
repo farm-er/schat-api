@@ -66,7 +66,7 @@ async function getImage( req: Request, res: Response) {
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-mediaRouter.post( "/images/", upload.single('avatar'), storeImage)
+mediaRouter.post( "/images/", upload.single('media'), storeImage)
 
 async function storeImage( req: Request, res: Response) {
 
