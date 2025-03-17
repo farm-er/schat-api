@@ -70,7 +70,7 @@ mediaRouter.post( "/images/", upload.single('media'), storeImage)
 
 async function storeImage( req: Request, res: Response) {
 
-    const userId = res.locals.payload.userId as string
+    const userId = res.locals.payload.id as string
 
     const chatId = req.query.chatId as string
     const image = req.file?.buffer

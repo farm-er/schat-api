@@ -36,5 +36,20 @@ export async function handleTyping( socket: Server, userId: string, data: any) {
 }
 
 
+export async function handleRead( socket: Server, userId: string, data: any) {
+
+    try {
+
+        const chatId = data.chatId as string
+
+        // TODO: update it in the db
+
+        // TODO: notify the other user
+        
+    } catch (e) {
+        console.log( "error passing the typing event: ", e)
+    }
+
+}
 
 

@@ -22,6 +22,7 @@ export async function createMessageTable( client: Client) {
             content TEXT,
             reply frozen<reply>,
             media TEXT,
+            seen BOOLEAN,
             PRIMARY KEY (chat_id, id)
         ) WITH CLUSTERING ORDER BY (id DESC);
     `;
@@ -55,7 +56,7 @@ export default class Message {
     content: string
     reply: Reply | null
     media: string | null
-
+    seen: boolean
 
     constructor(
         {
@@ -65,7 +66,8 @@ export default class Message {
             userId,
             content,
             reply,
-            media
+            media,
+            seen
         }: {
             sentAt: Date;
             chatId: string
@@ -74,6 +76,7 @@ export default class Message {
             content: string
             reply: Reply | null
             media: string | null
+            seen: boolean
         }
     ) {
         this.sentAt = sentAt
@@ -83,13 +86,14 @@ export default class Message {
         this.content = content
         this.reply = reply
         this.media = media
+        this.seen = seen
     }
 
     async addMessage() {
 
         const insertQuery = `
-            INSERT INTO messages ( sent_at, chat_id, id, user_id, content, reply, media)
-            VALUES (?, ?, now(), ?, ?, ?, ?);
+            INSERT INTO messages ( sent_at, chat_id, id, user_id, content, reply, media, seen)
+            VALUES (?, ?, now(), ?, ?, ?, ?, ?);
         `;
 
         const exec = await dbClient.execute(insertQuery, [
@@ -98,7 +102,8 @@ export default class Message {
             this.userId,
             this.content,
             this.reply || null,
-            this.media || null
+            this.media || null,
+            false
         ], { prepare: true });
 
     }
@@ -125,7 +130,8 @@ export default class Message {
             userId: row.get('user_id'),
             content: row.get('content'),
             reply: row.get('reply'),
-            media: row.get('media')
+            media: row.get('media'),
+            seen: row.get('seen'),
         }));
 
         return messages
@@ -141,5 +147,10 @@ export default class Message {
         ], { prepare: true });
 
     }
+
+    static async readMessages( chatId: string) {
+
+    }
+
 }
   

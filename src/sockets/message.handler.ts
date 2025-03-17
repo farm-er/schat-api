@@ -65,7 +65,8 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             userId: userId,
             content: content,
             reply: reply,
-            media: media
+            media: media,
+            seen: false
         })
 
         await message.addMessage()
