@@ -1,4 +1,4 @@
-import { Client } from "cassandra-driver";
+import { ArrayOrObject, Client } from "cassandra-driver";
 import dbClient from "../database/client";
 
 
@@ -151,13 +151,28 @@ export default class Message {
     static async readMessages( chatId: string) {
 
         const insertQuery = `
-            update messages SET seen=true
-            WHERE chat_id=? ;
+            SELECT id FROM messages WHERE chat_id=? AND seen=false;
         `;
 
-        await dbClient.execute(insertQuery, [
+        const result = await dbClient.execute(insertQuery, [
             chatId
         ], { prepare: true });
+
+        if (result.rowLength === 0) {
+            return null
+        }
+        
+        let updateQuery = 'BEGIN BATCH\n'
+        let params: ArrayOrObject = []
+
+        result.rows.forEach( row => {
+            updateQuery += ` UPDATE messages SET seen=true WHERE chat_id=? AND id=?\n`
+            params.push( chatId, row.get("id"))
+        });
+
+        updateQuery += "APPLY BATCH"
+
+        await dbClient.execute(updateQuery, params, { prepare: true });
     }
 
 }

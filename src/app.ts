@@ -22,7 +22,7 @@ import { createAvatarTable } from "./media_storage/media_storage";
 import messageRouter from "./message/message.routes";
 import searchUserRouter from "./search/search.user";
 import sendRouter from "./auth/send.verificationCode";
-import { handleTyping } from "./sockets/events.handler";
+import { handleRead, handleTyping } from "./sockets/events.handler";
 import { connectToRedis } from "./cache/client";
 import mediaRouter from "./media_storage/media.handlers";
 import { createStorageBuckets, minioClient } from "./media_storage/client";
@@ -193,6 +193,10 @@ io.on( "connection", async (socket: Socket) => {
         // }
         socket.on( "typing", async (data) => {
             await handleTyping( io, user.id, data)
+        })
+
+        socket.on( "read", async (data) => {
+            await handleRead( io, user.id, data)
         })
 
         // TODO: other events here
