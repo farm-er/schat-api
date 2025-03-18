@@ -48,7 +48,7 @@ async function getImage( req: Request, res: Response) {
             return;
         }
         
-        const url = await mediaStorage.getImage( chatId + "/" + imageId)
+        const url = await mediaStorage.getImage( imageId)
 
         res.status(HttpStatus.OK).json({
             "url": url

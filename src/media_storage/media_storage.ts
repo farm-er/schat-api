@@ -61,7 +61,7 @@ export default class mediaStorage {
     }
 
     // managing images storage
-    static async storeImage( prefix: string, imageData :Buffer): Promise<string> {
+    static async storeImage( prefix: string, imageData: Buffer): Promise<string> {
 
         const type = await imageType( imageData)
 
@@ -82,7 +82,7 @@ export default class mediaStorage {
     }
 
     static async getImage( imageId: string): Promise<string> {
-        const url = await minioClient.presignedGetObject( "images", imageId, 3600) // url valid for 7d
+        const url = await minioClient.presignedGetObject( "images", imageId, 3600) // url valid for 1h
         console.log("download url: ", url)
         return url
     }
