@@ -2,6 +2,7 @@ import { Client } from "cassandra-driver";
 import dbClient from "../database/client";
 import { minioClient } from "./client";
 import { v4 as uuidv4 } from "uuid"
+import imageType from "image-type";
 
 
 // TODO: change avatar table
@@ -62,7 +63,11 @@ export default class mediaStorage {
     // managing images storage
     static async storeImage( prefix: string, imageData :Buffer): Promise<string> {
 
-        const imageId = prefix + uuidv4()
+        const type = await imageType( imageData)
+
+        if (!type) throw new Error("no type found")
+
+        const imageId = prefix + uuidv4() + type.ext
         console.log("storing image with id: ", imageId)
         // WE CAN USE THE ITAG AFTER TO VALIDATE THE DATA INTEGRITY
         await minioClient.putObject( "images", imageId, imageData, imageData.length)

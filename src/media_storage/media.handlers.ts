@@ -94,13 +94,6 @@ async function storeImage( req: Request, res: Response) {
             return;
         }
 
-        const type = await imageType( image)
-
-        if (!type) {
-            jsonResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Unable to determine image type");
-            return;
-        }
-
         // TODO: maybe some type validation here
     
         const imageId = await mediaStorage.storeImage( chatId, image)
