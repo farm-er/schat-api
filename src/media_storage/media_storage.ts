@@ -67,7 +67,7 @@ export default class mediaStorage {
 
         if (!type) throw new Error("no type found")
 
-        const imageId = prefix + uuidv4() + "." + type.ext
+        const imageId = "/" + prefix + "/" + uuidv4() + "." + type.ext.toString()
         console.log("storing image with id: ", imageId)
         // WE CAN USE THE ITAG AFTER TO VALIDATE THE DATA INTEGRITY
         await minioClient.putObject( "images", imageId, imageData, imageData.length)
