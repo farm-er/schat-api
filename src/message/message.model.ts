@@ -9,7 +9,8 @@ export async function createMessageTable( client: Client) {
     const replyType = `
         CREATE TYPE IF NOT EXISTS reply (
             id UUID,
-            content TEXT
+            content TEXT,
+            media TEXT
         );
     `
   
@@ -45,6 +46,7 @@ export async function createMessageTable( client: Client) {
 export interface Reply {
     id: string
     content: string
+    media: string
 }
 
 export default class Message {
@@ -150,29 +152,17 @@ export default class Message {
 
     static async readMessages( chatId: string) {
 
-        const insertQuery = `
-            SELECT id FROM messages WHERE chat_id=? AND seen=false;
+        const messageQuery = `
+            SELECT id FROM messages WHERE chat_id=? LIMIT 1;
+        `
+
+        const result = await dbClient.execute(messageQuery, [chatId], { prepare: true })
+
+        const updateQuery = `
+            UPDATE messages SET seen = True WHERE chat_id=? AND id=?;
         `;
 
-        const result = await dbClient.execute(insertQuery, [
-            chatId
-        ], { prepare: true });
-
-        if (result.rowLength === 0) {
-            return null
-        }
-        
-        let updateQuery = 'BEGIN BATCH\n'
-        let params: ArrayOrObject = []
-
-        result.rows.forEach( row => {
-            updateQuery += ` UPDATE messages SET seen=true WHERE chat_id=? AND id=?\n`
-            params.push( chatId, row.get("id"))
-        });
-
-        updateQuery += "APPLY BATCH"
-
-        await dbClient.execute(updateQuery, params, { prepare: true });
+        await dbClient.execute(updateQuery, [ chatId, result.first().get("id")], { prepare: true });
     }
 
 }

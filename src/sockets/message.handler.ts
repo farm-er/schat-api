@@ -26,7 +26,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
     const reply = data.reply as Reply | null
     const media = data.media as string
 
-    if (!chatId || !receiverId || ( !content )) {
+    if (!chatId || !receiverId || ( !content && !media )) {
         io.to(userId).emit("missing field")
         return
     }
@@ -44,7 +44,7 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
                 io.to(socketId).emit("unauthorized", "blocked");
                 return
             }
-        }   else if ( chat.user2.id.toString() === userId) {
+        } else if ( chat.user2.id.toString() === userId) {
             if (chat.user2.status === userStatus.BLOCKED) {
                 io.to(socketId).emit("unauthorized", "blocked");
                 return
@@ -69,11 +69,11 @@ export async function handleMessage( io: Server, socketId: string, userId: strin
             seen: false
         })
 
+
         await message.addMessage()
 
         const receiverSock = await getSession( receiverId)
 
-        console.log( "sending: ", message)
         io.to(receiverSock).emit("message", { message: message});
         // sending the message back to the user
         // sending only the required data

@@ -29,6 +29,9 @@ registerRouter.post('/', upload.single('avatar'), registerUser)
 async function registerUser( req: Request, res: Response) {
 
     try {
+
+        console.log("starting register")
+
         // get data from request
         const username: string = req.body.username
         const bio: string = req.body.bio
@@ -77,14 +80,18 @@ async function registerUser( req: Request, res: Response) {
 
         await User.addUser( user, avatar);
 
-        // TODO: need to make the token only available for like 10 minutes 
+        // TODO: need to make the token only available for like 10 minutes
+        console.log("token generation")
 
         // send a url with the token in it to the user's email
         const token = generateEmailVerificationToken( user.id, false)
 
         // send email with the token
+        console.log("before email")
 
         await sendVerificationEmail( user.email, `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/verify?token=${token}`)
+    
+        console.log("after email")
     
         jsonResponse( res, HttpStatus.CREATED, "unverified user account created")
 
