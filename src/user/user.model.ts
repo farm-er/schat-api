@@ -151,7 +151,7 @@ export default class User {
     if ( avatar) {
       const type = await imageType( avatar)
       if(!type) throw new Error( "invalid avatar")
-      user.avatar = await mediaStorage.storeImage( user.id, avatar, type.ext);
+      user.avatar = await mediaStorage.storeImage( user.id, avatar);
       console.log( "this is the avatar after uploading: ", avatar.length)
     }
 
